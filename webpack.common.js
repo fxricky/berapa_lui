@@ -1,5 +1,6 @@
 // entry point -> output file
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: './src',
@@ -13,6 +14,7 @@ module.exports = {
     // Add '.ts' and '.tsx' as resolvable extensions.
     extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js'],
   },
+  plugins: [new MiniCssExtractPlugin()],
   module: {
     rules: [
       {
@@ -29,7 +31,7 @@ module.exports = {
       },
       {
         test: /\.s?css$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
       },
     ],
   },
