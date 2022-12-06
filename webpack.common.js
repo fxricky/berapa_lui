@@ -4,11 +4,12 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   entry: './src',
+  cache: false,
 
   output: {
     path: path.join(__dirname, 'public'),
     filename: '[name].bundle.js',
-    clean: true,
+    // clean: true,
   },
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
