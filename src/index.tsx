@@ -1,30 +1,51 @@
 import React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
-import { Provider } from 'react-redux';
-import { store } from './redux/store';
+import { Provider, useDispatch } from 'react-redux';
+import { AppDispatch, store } from './redux/store';
 
-import { BrowserRouter } from 'react-router-dom';
-import RootFooter from './components/RootFooter';
-import RootHeader from './components/RootHeader';
+import { BrowserRouter, useNavigate } from 'react-router-dom';
 
-import RootRouters from './routers';
+import { RootRouters } from './routers';
+import './firebase';
 
 import './theme/main.scss';
+import { onAuthStateChanged } from 'firebase/auth';
+import { firebaseAuthInstance } from './firebase';
+import { login, logout } from './redux/auth';
+import { AnyAction } from '@reduxjs/toolkit';
 
-const routes = (
-  <Provider store={store}>
+// const authListener = () => {
+
+// }
+
+const AppRoot = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  onAuthStateChanged(firebaseAuthInstance, (user) => {
+    if (user) {
+      return dispatch(login(user.toJSON()));
+    }
+
+    dispatch(logout());
+  });
+
+  return (
     <div className='fullWrapper'>
       <BrowserRouter>
-        <RootHeader />
-        <div className='contentContainer'>
-          <RootRouters />
-        </div>
-        <RootFooter />
+        <RootRouters />
       </BrowserRouter>
     </div>
-  </Provider>
-);
+  );
+};
+
+const WrappedAppRoot = () => {
+  return (
+    <Provider store={store}>
+      <AppRoot />
+    </Provider>
+  );
+};
 
 // render root
 const rootApp = ReactDOMClient.createRoot(document.getElementById('app'));
-rootApp.render(routes);
+rootApp.render(<WrappedAppRoot />);
