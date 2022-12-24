@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { PAGE_NAME } from '../../constants';
+import { getAllTransactions } from '../../dataAccess';
 import TransactionListItem from './components/TransactionListItem';
 
 const DashboardPage = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getAllTransactions();
+  }, []);
+
   const transactions: any[] = useSelector((reducer: any) => {
     console.log(reducer.transaction);
 

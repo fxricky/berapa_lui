@@ -6,7 +6,7 @@ type Props = {
 };
 
 const TransactionListItem: React.FC<Props> = ({ data }) => {
-  const { name, amount } = data;
+  const { description: name, amount } = data;
 
   return (
     <div>

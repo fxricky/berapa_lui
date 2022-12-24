@@ -7,8 +7,9 @@ import DashboardPage from './pages/DashboardPage';
 import LoginPage from './pages/LoginPage';
 import MeProfilePage from './pages/MeProfilePage';
 import HomePage from './pages/HomePage';
-import ProtectedLayout from './routes/ProtectedLayout';
-import PublicLayout from './routes/PublicLayout';
+import ProtectedLayout from './layouts/ProtectedLayout';
+import PublicLayout from './layouts/PublicLayout';
+import DefaultLayout from './layouts/DefaultLayout';
 
 type Props = {};
 
@@ -20,10 +21,10 @@ export const RootRouters: React.FC<Props> = ({}) => {
         <Route path='/login' element={<LoginPage />} />
         {/* <Route path='/help' element={<HelpPage />} /> */}
       </Route>
-      <Route element={<ProtectedLayout />}>
+      {/* <Route element={<ProtectedLayout />}> */}
+      <Route element={<DefaultLayout />}>
         <Route path='/dashboard' element={<DashboardPage />} />
-        <Route path='/detail'>
-          <Route index element={<DetailPage />} />
+        <Route path='/detail' element={<DetailPage />}>
           <Route path=':id' element={<DetailPage />} />
         </Route>
         <Route path='/profile' element={<MeProfilePage />} />

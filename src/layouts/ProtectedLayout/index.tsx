@@ -1,6 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, useOutlet } from 'react-router-dom';
+import {
+  Navigate,
+  redirect,
+  useLocation,
+  useOutlet,
+  useRoutes,
+} from 'react-router-dom';
 import RootFooter from '../../components/RootFooter';
 import RootHeader from '../../components/RootHeader';
 
@@ -12,9 +18,16 @@ const ProtectedLayout: React.FC<Props> = ({}) => {
     return state.auth.account;
   });
   const outlet = useOutlet();
+  const location = useLocation();
+
+  console.log(location);
 
   if (!userAccount) {
-    return <Navigate to='/' />;
+    // return <Navigate to='/' replace />;
+  }
+
+  if (location) {
+    // redirect(location.pathname);
   }
 
   return (

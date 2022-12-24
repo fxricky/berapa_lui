@@ -4,11 +4,8 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { v4 } from 'uuid';
-import {
-  addTransaction,
-  deleteTransaction,
-  editTransaction,
-} from '../../redux/transaction';
+import { addTransaction, updateTransaction } from '../../dataAccess';
+import { Transaction } from '../../type';
 
 type Props = {};
 
@@ -18,20 +15,24 @@ const selectTrnDetail = createSelector(
 );
 
 const DetailPage: React.FC<Props> = ({ ...props }) => {
-  const DEFAULT_FORM_DATA = {
-    id: undefined,
+  const DEFAULT_FORM_DATA: Transaction = {
     description: '',
     amount: 0,
     createdDate: Date.now(),
+    createdBy: '',
   };
 
-  const [formData, updateFormData] = React.useState(DEFAULT_FORM_DATA);
+  const [formData, updateFormData] =
+    React.useState<Transaction>(DEFAULT_FORM_DATA);
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const params = useParams();
 
+  console.log(params);
+
   const trnDetail = useSelector((state) => selectTrnDetail(state, params.id));
+  const account = useSelector((state) => state.auth.account);
 
   useEffect(() => {
     if (trnDetail) {
@@ -45,51 +46,55 @@ const DetailPage: React.FC<Props> = ({ ...props }) => {
   };
 
   const onValueChanged = (fieldName: string) => (event: any) => {
-    console.log(event.target.value);
+    console.log('eventVal', event.target.value);
 
     let newValue = event.target.value;
-    if (
-      fieldName == 'amount' &&
-      (!newValue || !/^\d+(\.\d{0,2})?$/.exec(newValue))
-    ) {
-      return;
-    }
+    // if (fieldName == 'amount' && !/^(\s*|\d+(\.\d)*)$/.exec(newValue)) {
+    //   console.log('blocked');
+    //   return;
+    // }
 
     if (fieldName == 'createdDate') {
-      newValue = dayjs(newValue).valueOf();
+      newValue = dayjs(newValue).unix();
     }
 
     updateFormData({ ...formData, [fieldName]: newValue });
   };
 
-  const submitFormHandler: React.FormEventHandler = (event) => {
+  const submitFormHandler: React.FormEventHandler = async (event) => {
     event.preventDefault();
 
-    const { id, description, amount } = formData;
-    if (!description || !amount) {
-      return alert('Please input all the info!');
-    }
+    try {
+      const { description, amount } = formData;
+      if (!description || !amount) {
+        return alert('Please input all the info!');
+      }
 
-    console.log(formData);
-    if (!id) {
-      dispatch(
-        addTransaction({
+      if (!/^\d+(\.\d{0,2})?$/.exec(amount + '')) {
+        return alert('Please input a valid amount');
+      }
+
+      console.log(formData);
+      if (params.id) {
+        await updateTransaction(params.id, {
           ...formData,
-          id: v4(),
-        })
-      );
-    } else {
-      dispatch(
-        editTransaction({
+        });
+      } else {
+        await addTransaction(v4(), {
           ...formData,
-        })
-      );
+        });
+      }
+
+      navigate('/dashboard', {
+        replace: true,
+      });
+    } catch (error) {
+      alert(error);
     }
-    navigate('/');
   };
 
   const deleteTrnHandler = () => {
-    dispatch(deleteTransaction(params.id));
+    // dispatch(deleteTransaction(params.id));
     navigate('/');
   };
 

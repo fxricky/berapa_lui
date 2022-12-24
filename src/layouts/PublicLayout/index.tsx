@@ -14,7 +14,7 @@ const PublicLayout: React.FC<Props> = ({}) => {
   console.log(userAccount);
 
   if (userAccount) {
-    return <Navigate to='/dashboard' />;
+    return <Navigate to='/dashboard' replace />;
   }
 
   return <div>{outlet}</div>;
