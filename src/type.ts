@@ -6,3 +6,9 @@ export type Transaction = {
   updatedDate?: number;
   createdBy: string;
 };
+
+export type User = {
+  displayName: string;
+  email: string;
+  photoURL: string;
+};

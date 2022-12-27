@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   setDoc,
   updateDoc,
@@ -8,12 +9,13 @@ import {
 import { firebaseDbInstance } from '../firebase';
 import { Transaction } from '../type';
 
-const COL_TRANSACTION = 'transaction';
+const COL_TRANSACTION = 'transactions';
 
 export const addTransaction = async (id: string, data: Transaction) => {
   try {
     await setDoc(doc(firebaseDbInstance, COL_TRANSACTION, id), data);
   } catch (error) {
+    console.error(error);
     throw error;
   }
 };
@@ -32,10 +34,25 @@ export const getAllTransactions = async () => {
       collection(firebaseDbInstance, COL_TRANSACTION)
     );
 
+    const trnObjects: any[] = [];
     snapshot.forEach((doc) => {
       console.log(doc.id, doc.data());
+      trnObjects.push({ id: doc.id, ...doc.data() });
     });
+
+    return trnObjects;
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const getTransactionById = async (id: string) => {
+  try {
+    const result = await getDoc(doc(firebaseDbInstance, COL_TRANSACTION, id));
+
+    return result.data();
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 };

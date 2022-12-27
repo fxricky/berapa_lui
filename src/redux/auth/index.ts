@@ -1,10 +1,22 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { signOut } from 'firebase/auth';
+import { addOrUpdateUser } from '../../dataAccess/users';
 import { firebaseAuthInstance } from '../../firebase';
 
 export const login = createAsyncThunk<any, any>(
   'auth/login',
   async (userInfo) => {
+    const { displayName, email, photoURL } = userInfo;
+    console.log(userInfo);
+    await addOrUpdateUser({
+      id: userInfo.uid,
+      data: {
+        displayName,
+        email,
+        photoURL,
+      },
+    });
+
     return userInfo;
   }
 );

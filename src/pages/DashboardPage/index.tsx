@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { PAGE_NAME } from '../../constants';
@@ -7,9 +7,15 @@ import TransactionListItem from './components/TransactionListItem';
 
 const DashboardPage = () => {
   const navigate = useNavigate();
+  const [displayList, setDisplayList] = useState([]);
 
   useEffect(() => {
-    getAllTransactions();
+    // getAllTransactions();
+
+    (async () => {
+      const result = await getAllTransactions();
+      setDisplayList(result);
+    })();
   }, []);
 
   const transactions: any[] = useSelector((reducer: any) => {
@@ -25,15 +31,19 @@ const DashboardPage = () => {
   return (
     <div>
       <h1>HOME PAGE</h1>
-      {transactions.map((t) => {
+      {displayList.map((t) => {
         console.log(t);
         return (
-          <div key={`list-${t.id}`} onClick={navigateToDetail(t.id)}>
-            <TransactionListItem data={t} />
-          </div>
+          <TransactionListItem
+            key={`list-${t.id}`}
+            onClick={navigateToDetail(t.id)}
+            data={t}
+          />
         );
       })}
-      <NavLink to={PAGE_NAME.DETAIL_PAGE}>Create Expenses</NavLink>
+      <NavLink style={{ alignSelf: 'center' }} to={PAGE_NAME.DETAIL_PAGE}>
+        Create Expenses
+      </NavLink>
     </div>
   );
 };

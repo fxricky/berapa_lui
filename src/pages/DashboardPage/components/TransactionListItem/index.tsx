@@ -1,15 +1,15 @@
 import React from 'react';
 import { Transaction } from '../../../../type';
 
-type Props = {
+type Props = React.HTMLAttributes<HTMLDivElement> & {
   data: Transaction;
 };
 
-const TransactionListItem: React.FC<Props> = ({ data }) => {
+const TransactionListItem: React.FC<Props> = ({ data, ...props }) => {
   const { description: name, amount } = data;
 
   return (
-    <div>
+    <div {...props}>
       {name}
       {amount}
     </div>

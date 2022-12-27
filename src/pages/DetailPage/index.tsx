@@ -4,7 +4,11 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { v4 } from 'uuid';
-import { addTransaction, updateTransaction } from '../../dataAccess';
+import {
+  addTransaction,
+  getTransactionById,
+  updateTransaction,
+} from '../../dataAccess';
 import { Transaction } from '../../type';
 
 type Props = {};
@@ -29,10 +33,23 @@ const DetailPage: React.FC<Props> = ({ ...props }) => {
   const dispatch = useDispatch();
   const params = useParams();
 
-  console.log(params);
-
   const trnDetail = useSelector((state) => selectTrnDetail(state, params.id));
   const account = useSelector((state) => state.auth.account);
+
+  useEffect(() => {
+    try {
+      if (params?.id) {
+        (async () => {
+          console.log('loading');
+          const resp = await getTransactionById(params.id);
+
+          console.log(resp);
+          updateFormData(resp);
+          console.log('done loading');
+        })();
+      }
+    } catch (error) {}
+  }, [params?.id]);
 
   useEffect(() => {
     if (trnDetail) {
@@ -98,6 +115,8 @@ const DetailPage: React.FC<Props> = ({ ...props }) => {
     navigate('/');
   };
 
+  console.log(account);
+
   return (
     <form onSubmit={submitFormHandler}>
       <input
@@ -124,9 +143,9 @@ const DetailPage: React.FC<Props> = ({ ...props }) => {
         />
       </div>
       <div>
-        {formData.id && <button onClick={deleteTrnHandler}>Delete</button>}
+        {params.id && <button onClick={deleteTrnHandler}>Delete</button>}
         <button type={'submit'}>
-          {formData.id ? `Save` : 'Add'} Transaction
+          {params.id ? `Save` : 'Add'} Transaction
         </button>
       </div>
     </form>
