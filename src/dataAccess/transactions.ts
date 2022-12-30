@@ -1,5 +1,6 @@
 import {
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -54,5 +55,17 @@ export const getTransactionById = async (id: string) => {
   } catch (error) {
     console.error(error);
     return null;
+  }
+};
+
+export const deleteTransaction = async (id: string) => {
+  try {
+    const result = await deleteDoc(
+      doc(firebaseDbInstance, COL_TRANSACTION, id)
+    );
+    console.log(result);
+    return true;
+  } catch (error) {
+    // console.error(error);
   }
 };

@@ -6,6 +6,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { v4 } from 'uuid';
 import {
   addTransaction,
+  deleteTransaction,
   getTransactionById,
   updateTransaction,
 } from '../../dataAccess';
@@ -13,43 +14,58 @@ import { Transaction } from '../../type';
 
 type Props = {};
 
+type FormTransaction = Omit<Transaction, 'amount'> & {
+  amount: string;
+};
+
 const selectTrnDetail = createSelector(
   [(state: any) => state.transaction, (_, trnId) => trnId],
   (_, trnId) => _.transactions.find((t) => t.id === trnId)
 );
 
 const DetailPage: React.FC<Props> = ({ ...props }) => {
-  const DEFAULT_FORM_DATA: Transaction = {
-    description: '',
-    amount: 0,
-    createdDate: Date.now(),
-    createdBy: '',
-  };
-
-  const [formData, updateFormData] =
-    React.useState<Transaction>(DEFAULT_FORM_DATA);
-  const navigate = useNavigate();
-
   const dispatch = useDispatch();
   const params = useParams();
 
   const trnDetail = useSelector((state) => selectTrnDetail(state, params.id));
   const account = useSelector((state) => state.auth.account);
 
-  useEffect(() => {
-    try {
-      if (params?.id) {
-        (async () => {
-          console.log('loading');
-          const resp = await getTransactionById(params.id);
+  const DEFAULT_FORM_DATA: FormTransaction = {
+    description: '',
+    amount: '',
+    createdDate: Date.now(),
+    createdBy: account?.uid,
+  };
 
-          console.log(resp);
-          updateFormData(resp);
-          console.log('done loading');
-        })();
-      }
-    } catch (error) {}
+  const [formData, updateFormData] =
+    React.useState<FormTransaction>(DEFAULT_FORM_DATA);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (params?.id) {
+      getTrn(params?.id);
+    }
   }, [params?.id]);
+
+  const getTrn = async (id: string) => {
+    try {
+      console.log('loading');
+      const resp = await getTransactionById(id);
+
+      if (!resp) {
+        throw 'invalid_response';
+      }
+
+      updateFormData(resp);
+      console.log('done loading');
+    } catch (error) {
+      return navigate('/');
+    }
+  };
+
+  useEffect(() => {
+    console.log('formData changed', formData);
+  }, [formData]);
 
   useEffect(() => {
     if (trnDetail) {
@@ -81,6 +97,8 @@ const DetailPage: React.FC<Props> = ({ ...props }) => {
   const submitFormHandler: React.FormEventHandler = async (event) => {
     event.preventDefault();
 
+    console.log('i came here wtf');
+
     try {
       const { description, amount } = formData;
       if (!description || !amount) {
@@ -91,15 +109,17 @@ const DetailPage: React.FC<Props> = ({ ...props }) => {
         return alert('Please input a valid amount');
       }
 
-      console.log(formData);
+      const data: Transaction = {
+        ...formData,
+        amount: +formData.amount,
+        createdBy: account?.uid,
+        createdDate: Date.now(),
+      };
+
       if (params.id) {
-        await updateTransaction(params.id, {
-          ...formData,
-        });
+        await updateTransaction(params.id, data);
       } else {
-        await addTransaction(v4(), {
-          ...formData,
-        });
+        await addTransaction(v4(), data);
       }
 
       navigate('/dashboard', {
@@ -110,9 +130,12 @@ const DetailPage: React.FC<Props> = ({ ...props }) => {
     }
   };
 
-  const deleteTrnHandler = () => {
-    // dispatch(deleteTransaction(params.id));
-    navigate('/');
+  const deleteTrnHandler = async () => {
+    if (await deleteTransaction(params?.id)) {
+      return navigate('/');
+    }
+
+    alert('delete transaction failed');
   };
 
   console.log(account);
@@ -143,7 +166,11 @@ const DetailPage: React.FC<Props> = ({ ...props }) => {
         />
       </div>
       <div>
-        {params.id && <button onClick={deleteTrnHandler}>Delete</button>}
+        {params.id && (
+          <button type={'button'} onClick={deleteTrnHandler}>
+            Delete
+          </button>
+        )}
         <button type={'submit'}>
           {params.id ? `Save` : 'Add'} Transaction
         </button>
