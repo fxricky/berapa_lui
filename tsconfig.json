@@ -10,5 +10,5 @@
     "sourceMap": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*", "styles.module.css.d.ts"]
 }
