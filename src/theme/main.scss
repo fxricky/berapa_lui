@@ -1,5 +1,11 @@
-footer {
-  // background-color: blue;
+@import 'colors';
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+  font-family: 'Roboto Mono', monospace;
 }
 
 .contentContainer {
@@ -14,4 +20,20 @@ footer {
 
 body {
   margin: 0;
+  background-color: $color-base;
+  height: 100%;
+}
+
+.rowy {
+  display: flex;
+  flex-direction: row;
+}
+
+.separateRowy {
+  justify-content: space-between;
+}
+
+.lightLabel {
+  font-size: 0.6em;
+  color: darkgrey;
 }

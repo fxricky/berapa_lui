@@ -1,0 +1,19 @@
+@import 'theme/colors';
+
+.container {
+  padding: 1.5em;
+  background-color: white;
+
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+
+  border-radius: 8px;
+}
+
+.infoContainer {
+  align-self: center;
+}
+
+#amountTxt {
+  font-size: 1.5em;
+  font-weight: 700;
+}

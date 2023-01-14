@@ -8,11 +8,11 @@ type Props = {};
 const DefaultLayout: React.FC<Props> = ({}) => {
   return (
     <>
-      <RootHeader />
+      {/* <RootHeader /> */}
       <div className='contentContainer'>
         <Outlet />
       </div>
-      <RootFooter />
+      {/* <RootFooter /> */}
     </>
   );
 };

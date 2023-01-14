@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { PAGE_NAME } from '../../constants';
 import { getAllTransactions } from '../../dataAccess';
+import DashboardContent from './components/Content';
+import DashboardDrawer from './components/Drawer';
 import TransactionListItem from './components/TransactionListItem';
 
 const DashboardPage = () => {
@@ -29,9 +31,18 @@ const DashboardPage = () => {
   };
 
   return (
-    <div>
-      <h1>HOME PAGE</h1>
-      {displayList.map((t) => {
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        height: '100vh',
+        maxHeight: '100vh',
+      }}
+    >
+      <DashboardDrawer />
+
+      <DashboardContent />
+      {/* {displayList.map((t) => {
         console.log(t);
         return (
           <TransactionListItem
@@ -43,7 +54,7 @@ const DashboardPage = () => {
       })}
       <NavLink style={{ alignSelf: 'center' }} to={PAGE_NAME.DETAIL_PAGE}>
         Create Expenses
-      </NavLink>
+      </NavLink> */}
     </div>
   );
 };
