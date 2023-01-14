@@ -1,0 +1,35 @@
+@import 'theme/colors';
+
+.sendBtn {
+  display: flex;
+  background-color: $color-primary;
+  padding: 0 2em;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1.5em 0 1.5em 0;
+  color: white;
+}
+
+.amountContainer {
+  display: flex;
+  flex: 1;
+  border-bottom: 1px solid grey;
+}
+
+.amountContainer input {
+  appearance: none;
+  -webkit-appearance: none;
+  // align-self: flex-end;
+  background: red;
+  height: 100%;
+  font-size: 100%;
+
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}

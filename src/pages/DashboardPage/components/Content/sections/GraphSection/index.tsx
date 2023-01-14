@@ -43,7 +43,7 @@ const GraphSection: React.FC<Props> = ({}) => {
       </ResponsiveContainer>
       <div className={`rowy ${styles.rowContainer}`}>
         {DAYS.map((day) => {
-          return <LeafyBtn label={day} />;
+          return <LeafyBtn key={day} label={day} />;
         })}
       </div>
     </div>

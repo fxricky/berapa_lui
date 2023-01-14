@@ -23,7 +23,7 @@ const DashboardDrawer: React.FC<Props> = ({}) => {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        width: 350,
+        width: 250,
         height: '100%',
         // alignItems: 'center',
       }}

@@ -15,6 +15,7 @@ const DashboardContent: React.FC<Props> = ({}) => {
         <GraphSection />
         <TransferMoneySection />
       </div>
+      <div className={styles.profileContainer}></div>
     </div>
   );
 };
